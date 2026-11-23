@@ -171,6 +171,10 @@ app.get('/api/admin/users', cekLogin, async (req, res) => {
   res.json(data);
 });
 
-app.listen(PORT, () => {
-  console.log(`Server Catat Cuan (Supabase Cloud) jalan di http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server Catat Cuan (Supabase Cloud) jalan di http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
