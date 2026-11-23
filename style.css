@@ -1,0 +1,180 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  padding: 40px 16px;
+}
+
+.container {
+  width: 100%;
+  max-width: 440px;
+  background-color: #1e293b;
+  padding: 28px;
+  border-radius: 16px;
+  border: 1px solid #334155;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.app-header h1 {
+  font-size: 24px;
+  color: #38bdf8;
+}
+
+.app-header p {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+/* Kartu Saldo */
+.saldo-card {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border: 1px solid #334155;
+  padding: 20px;
+  border-radius: 12px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.saldo-card span {
+  font-size: 13px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.saldo-card h2 {
+  font-size: 32px;
+  margin-top: 6px;
+  color: #10b981;
+}
+
+/* Form Input */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: 1px solid #334155;
+  background-color: #0f172a;
+  color: #f8fafc;
+  font-size: 14px;
+  outline: none;
+}
+
+input:focus {
+  border-color: #38bdf8;
+}
+
+.btn-row {
+  display: flex;
+  gap: 10px;
+}
+
+button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+button:hover {
+  opacity: 0.9;
+}
+
+.btn-masuk {
+  background-color: #10b981;
+  color: #064e3b;
+}
+
+.btn-keluar {
+  background-color: #ef4444;
+  color: #ffffff;
+}
+
+/* Daftar Riwayat */
+.riwayat-section h3 {
+  font-size: 15px;
+  color: #cbd5e1;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #334155;
+  padding-bottom: 8px;
+}
+
+ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+li {
+  background-color: #0f172a;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #334155;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.item-nama {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.item-kanan {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nominal-masuk {
+  color: #10b981;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.nominal-keluar {
+  color: #ef4444;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.btn-hapus {
+  background: transparent;
+  color: #64748b;
+  padding: 2px 6px;
+  font-size: 16px;
+  flex: none;
+}
+
+.btn-hapus:hover {
+  color: #ef4444;
+}
