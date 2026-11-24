@@ -25,20 +25,121 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-.app-header {
+/* Auth Section */
+.auth-header {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
-.app-header h1 {
-  font-size: 24px;
+.auth-header h1 {
+  font-size: 26px;
   color: #38bdf8;
 }
 
-.app-header p {
+.auth-header p {
+  color: #94a3b8;
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+.btn-auth {
+  background-color: #38bdf8;
+  color: #0f172a;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
   font-size: 13px;
   color: #94a3b8;
-  margin-top: 4px;
+}
+
+.auth-switch a {
+  color: #38bdf8;
+  text-decoration: none;
+  font-weight: bold;
+  margin-left: 4px;
+}
+
+/* Top Bar */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.top-bar h1 {
+  font-size: 22px;
+  color: #38bdf8;
+}
+
+.badge-role {
+  background-color: #38bdf8;
+  color: #0f172a;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.user-greeting {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.btn-logout {
+  background-color: #ef4444;
+  color: #ffffff;
+  padding: 8px 14px;
+  font-size: 12px;
+  flex: none;
+}
+
+/* Admin Panel */
+.admin-panel {
+  background-color: #0f172a;
+  border: 1px dashed #38bdf8;
+  border-radius: 10px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  color: #38bdf8;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.admin-header small {
+  color: #94a3b8;
+  font-weight: normal;
+}
+
+.admin-user-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+.admin-user-list li {
+  background: transparent;
+  border: none;
+  padding: 2px 0;
 }
 
 /* Kartu Saldo */
@@ -52,9 +153,8 @@ body {
 }
 
 .saldo-card span {
-  font-size: 13px;
+  font-size: 12px;
   color: #94a3b8;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
@@ -107,6 +207,11 @@ button:hover {
   opacity: 0.9;
 }
 
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .btn-masuk {
   background-color: #10b981;
   color: #064e3b;
@@ -117,7 +222,7 @@ button:hover {
   color: #ffffff;
 }
 
-/* Daftar Riwayat */
+/* Riwayat Transaksi */
 .riwayat-section h3 {
   font-size: 15px;
   color: #cbd5e1;
@@ -179,7 +284,51 @@ li {
   color: #ef4444;
 }
 
-/* Credit Developer di Bawah Kartu */
+/* Kotak AI Financial Planner */
+.ai-card {
+  margin-top: 24px;
+  background-color: #0f172a;
+  border: 1px solid #38bdf8;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.ai-card h3 {
+  font-size: 15px;
+  color: #38bdf8;
+  margin-bottom: 4px;
+}
+
+.ai-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 12px;
+}
+
+.ai-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ai {
+  background-color: #38bdf8;
+  color: #0f172a;
+  flex: none;
+  padding: 0 16px;
+}
+
+.hasil-ai {
+  margin-top: 12px;
+  padding: 12px;
+  background-color: #1e293b;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #e2e8f0;
+  white-space: pre-line;
+}
+
+/* Credit Developer */
 .dev-credit {
   margin-top: 24px;
   padding-top: 14px;
