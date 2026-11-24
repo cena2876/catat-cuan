@@ -348,3 +348,4 @@ li {
 .dev-credit a:hover {
   text-decoration: underline;
 }
+.admin-user-list li { justify-content: flex-start; gap: 6px; }
