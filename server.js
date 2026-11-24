@@ -11,6 +11,9 @@ app.use(cors());
 app.use(express.json());
 // Menyajikan file frontend (index.html, style.css, script.js) langsung dari server
 app.use(express.static(__dirname));
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
 // Koneksi ke Database Cloud Supabase milikmu
 const SUPABASE_URL = 'https://sgrxosnwmqtiyywiuwyv.supabase.co';
