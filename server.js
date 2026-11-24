@@ -3,27 +3,30 @@ const cors = require('cors');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const { createClient } = require('@supabase/supabase-js');
+const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-// Menyajikan file frontend (index.html, style.css, script.js) langsung dari server
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Koneksi ke Database Cloud Supabase milikmu
+// Koneksi ke Database Cloud Supabase
 const SUPABASE_URL = 'https://sgrxosnwmqtiyywiuwyv.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNncnhvc253bXF0aXl5d2l1d3l2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUzOTY5NTIsImV4cCI6MjExMDk3Mjk1Mn0.Art4g6gw9uSoJM_6fXmooeWBZgQOLC4Kklwr32LZSMc';
 const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
+// Koneksi ke Gemini AI (API Key dibaca otomatis dari Environment Variable GEMINI_API_KEY)
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+
 const JWT_SECRET = 'kunci-rahasia-catat-cuan-2026';
 
-// 1. JALUR REGISTER (Simpan akun baru ke tabel 'users' di Supabase)
+// 1. JALUR REGISTER
 app.post('/api/register', async (req, res) => {
   const { username, password } = req.body;
 
@@ -52,7 +55,7 @@ app.post('/api/register', async (req, res) => {
   res.status(201).json({ pesan: 'Registrasi berhasil! Silakan login.' });
 });
 
-// 2. JALUR LOGIN (Dengan laporan error jujur)
+// 2. JALUR LOGIN
 app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
@@ -69,7 +72,7 @@ app.post('/api/login', async (req, res) => {
   }
 
   if (!userCocok) {
-    return res.status(401).json({ pesan: 'Akun tidak ditemukan di tabel users Supabase!' });
+    return res.status(401).json({ pesan: 'Username atau password salah!' });
   }
 
   const token = jwt.sign(
@@ -104,7 +107,7 @@ function cekLogin(req, res, next) {
   });
 }
 
-// 4. AMBIL TRANSAKSI MILIK USER DARI SUPABASE
+// 4. AMBIL TRANSAKSI MILIK USER
 app.get('/api/transaksi', cekLogin, async (req, res) => {
   const { data, error } = await supabase
     .from('transaksi')
@@ -119,7 +122,7 @@ app.get('/api/transaksi', cekLogin, async (req, res) => {
   res.json(data);
 });
 
-// 5. TAMBAH TRANSAKSI BARU KE SUPABASE
+// 5. TAMBAH TRANSAKSI BARU
 app.post('/api/transaksi', cekLogin, async (req, res) => {
   const { nama, nominal, tipe } = req.body;
 
@@ -140,7 +143,7 @@ app.post('/api/transaksi', cekLogin, async (req, res) => {
   res.status(201).json(data);
 });
 
-// 6. HAPUS TRANSAKSI DARI SUPABASE
+// 6. HAPUS TRANSAKSI
 app.delete('/api/transaksi/:id', cekLogin, async (req, res) => {
   const id = Number(req.params.id);
 
@@ -157,7 +160,7 @@ app.delete('/api/transaksi/:id', cekLogin, async (req, res) => {
   res.json({ pesan: 'Terhapus' });
 });
 
-// 7. KHUSUS ADMIN: LIHAT DAFTAR SEMUA AKUN DI SUPABASE
+// 7. KHUSUS ADMIN: LIHAT DAFTAR SEMUA AKUN
 app.get('/api/admin/users', cekLogin, async (req, res) => {
   if (req.user.role !== 'admin') {
     return res.status(403).json({ pesan: 'Khusus Admin!' });
@@ -175,9 +178,57 @@ app.get('/api/admin/users', cekLogin, async (req, res) => {
   res.json(data);
 });
 
+// 8. AI FINANCIAL PLANNER (Analisis Saldo & Planning Keuangan)
+app.post('/api/ai-plan', cekLogin, async (req, res) => {
+  const { pertanyaan } = req.body;
+  if (!pertanyaan) {
+    return res.status(400).json({ pesan: 'Tulis pertanyaanmu dulu!' });
+  }
+
+  try {
+    const { data: transaksi } = await supabase
+      .from('transaksi')
+      .select('nama, nominal, tipe')
+      .eq('pemilik', req.user.username)
+      .order('id', { ascending: true });
+
+    let totalMasuk = 0;
+    let totalKeluar = 0;
+    const daftarTeks = (transaksi || []).map((t) => {
+      if (t.tipe === 'masuk') totalMasuk += Number(t.nominal);
+      else totalKeluar += Number(t.nominal);
+      return `- ${t.nama}: ${t.tipe === 'masuk' ? '+' : '-'}Rp ${Number(t.nominal).toLocaleString('id-ID')}`;
+    }).join('\n');
+
+    const sisaSaldo = totalMasuk - totalKeluar;
+
+    const prompt = `Kamu adalah asisten perencana keuangan (Financial Planner) pribadi untuk user bernama "${req.user.username}" di aplikasi Catat Cuan.
+Data keuangan user saat ini:
+- Total Pemasukan: Rp ${totalMasuk.toLocaleString('id-ID')}
+- Total Pengeluaran: Rp ${totalKeluar.toLocaleString('id-ID')}
+- Sisa Saldo Saat Ini: Rp ${sisaSaldo.toLocaleString('id-ID')}
+- Riwayat Transaksi:
+${daftarTeks || '(Belum ada transaksi)'}
+
+Pertanyaan user: "${pertanyaan}"
+
+Berikan jawaban yang praktis, santai tapi cerdas, langsung memakai angka nyata berdasarkan saldo di atas, dalam bahasa Indonesia yang ringkas (maksimal 2-3 paragraf atau poin singkat).`;
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+
+    res.json({ jawaban: response.text });
+  } catch (error) {
+    console.error('ERROR AI:', error);
+    res.status(500).json({ pesan: 'AI gagal merespons! Pastikan GEMINI_API_KEY sudah dipasang di Vercel.' });
+  }
+});
+
 if (process.env.NODE_ENV !== 'production') {
   app.listen(PORT, () => {
-    console.log(`Server Catat Cuan (Supabase Cloud) jalan di http://localhost:${PORT}`);
+    console.log(`Server Catat Cuan jalan di http://localhost:${PORT}`);
   });
 }
 
