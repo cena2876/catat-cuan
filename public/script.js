@@ -277,3 +277,4 @@ btnMasuk.addEventListener('click', () => kirimTransaksi('masuk'));
 btnKeluar.addEventListener('click', () => kirimTransaksi('keluar'));
 
 cekStatusMasuk();
+inputTanyaAi.addEventListener('keydown', (e) => { if (e.key === 'Enter') btnTanyaAi.click(); });
