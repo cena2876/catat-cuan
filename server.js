@@ -46,7 +46,7 @@ app.post('/api/register', async (req, res) => {
 
   const { error } = await supabase
     .from('users')
-    .insert([{ username: username.trim(), password, role: 'user' }]);
+    .insert(["gemini-3.5-flash-lite", "gemini-3.8-flash"]);
 
   if (error) {
     return res.status(500).json({ pesan: 'Gagal mendaftar ke database!' });
