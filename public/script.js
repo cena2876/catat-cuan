@@ -34,11 +34,14 @@ const totalKeluarText = document.getElementById('totalKeluarText');
 const jumlahDataBadge = document.getElementById('jumlahDataBadge');
 const tabelTransaksiBody = document.getElementById('tabelTransaksiBody');
 
-// Elemen Search & Filter
+// Elemen Search, Filter, & Pagination
 const searchInput = document.getElementById('searchInput');
 const filterKategori = document.getElementById('filterKategori');
 const filterTanggal = document.getElementById('filterTanggal');
 const btnResetFilter = document.getElementById('btnResetFilter');
+const rowsPerPageSelect = document.getElementById('rowsPerPage');
+const paginationInfo = document.getElementById('paginationInfo');
+const paginationButtons = document.getElementById('paginationButtons');
 
 // Elemen AI
 const inputTanyaAi = document.getElementById('inputTanyaAi');
@@ -47,6 +50,7 @@ const hasilAi = document.getElementById('hasilAi');
 
 let modeRegister = false;
 let semuaTransaksi = [];
+let halamanSekarang = 1;
 
 // Set waktu sekarang otomatis di input datetime-local
 function setWaktuSekarang() {
@@ -185,11 +189,51 @@ function formatWaktuIndo(waktuStr) {
   });
 }
 
-// Render Tabel Berdasarkan Search & Filter
+// Render Tombol Halaman (1, 2, 3, Dst.)
+function renderTombolHalaman(totalHalaman) {
+  paginationButtons.innerHTML = '';
+  if (totalHalaman <= 1) return;
+
+  // Tombol Prev (<)
+  const btnPrev = document.createElement('button');
+  btnPrev.className = 'btn-page';
+  btnPrev.textContent = '‹';
+  btnPrev.disabled = halamanSekarang === 1;
+  btnPrev.onclick = () => {
+    halamanSekarang--;
+    renderTabelTransaksi();
+  };
+  paginationButtons.appendChild(btnPrev);
+
+  // Nomor Halaman (1, 2, 3, ...)
+  for (let i = 1; i <= totalHalaman; i++) {
+    const btn = document.createElement('button');
+    btn.className = `btn-page ${i === halamanSekarang ? 'active' : ''}`;
+    btn.textContent = i;
+    btn.onclick = () => {
+      halamanSekarang = i;
+      renderTabelTransaksi();
+    };
+    paginationButtons.appendChild(btn);
+  }
+
+  // Tombol Next (>)
+  const btnNext = document.createElement('button');
+  btnNext.className = 'btn-page';
+  btnNext.textContent = '›';
+  btnNext.disabled = halamanSekarang === totalHalaman;
+  btnNext.onclick = () => {
+    halamanSekarang++;
+    renderTabelTransaksi();
+  };
+  paginationButtons.appendChild(btnNext);
+}
+
+// Render Tabel Berdasarkan Search, Filter, View Limit, & Halaman
 function renderTabelTransaksi() {
   const kataKunci = searchInput.value.toLowerCase().trim();
   const katDipilih = filterKategori.value;
-  const tglDipilih = filterTanggal.value; // Format YYYY-MM-DD
+  const tglDipilih = filterTanggal.value;
 
   const hasilFilter = semuaTransaksi.filter((item) => {
     const cocokNama = item.nama.toLowerCase().includes(kataKunci);
@@ -201,15 +245,29 @@ function renderTabelTransaksi() {
     return cocokNama && cocokKat && cocokTgl;
   });
 
-  jumlahDataBadge.textContent = `${hasilFilter.length} Data`;
+  const totalData = hasilFilter.length;
+  jumlahDataBadge.textContent = `${totalData} Data`;
   tabelTransaksiBody.innerHTML = '';
 
-  if (hasilFilter.length === 0) {
+  if (totalData === 0) {
     tabelTransaksiBody.innerHTML = `<tr><td colspan="5" class="empty-row">Tidak ada data transaksi yang cocok.</td></tr>`;
+    paginationInfo.textContent = 'Menampilkan 0–0 dari 0 data';
+    paginationButtons.innerHTML = '';
     return;
   }
 
-  hasilFilter.forEach((item) => {
+  const limitVal = rowsPerPageSelect.value;
+  const perHalaman = limitVal === 'ALL' ? totalData : Number(limitVal);
+  const totalHalaman = Math.ceil(totalData / perHalaman);
+
+  if (halamanSekarang > totalHalaman) halamanSekarang = totalHalaman;
+  if (halamanSekarang < 1) halamanSekarang = 1;
+
+  const indexAwal = (halamanSekarang - 1) * perHalaman;
+  const indexAkhir = Math.min(indexAwal + perHalaman, totalData);
+  const dataHalamanIni = hasilFilter.slice(indexAwal, indexAkhir);
+
+  dataHalamanIni.forEach((item) => {
     const isMasuk = item.tipe === 'masuk';
     const tanda = isMasuk ? '+' : '-';
     const kelasWarna = isMasuk ? 'nominal-masuk' : 'nominal-keluar';
@@ -226,6 +284,9 @@ function renderTabelTransaksi() {
     `;
     tabelTransaksiBody.appendChild(tr);
   });
+
+  paginationInfo.textContent = `Menampilkan ${indexAwal + 1}–${indexAkhir} dari ${totalData} data`;
+  renderTombolHalaman(totalHalaman);
 }
 
 // Muat Semua Transaksi dari Server
@@ -290,6 +351,7 @@ async function kirimTransaksi(tipe) {
       inputNominal.value = '';
       setWaktuSekarang();
       inputNama.focus();
+      halamanSekarang = 1;
       muatTransaksi();
     } else {
       const err = await response.json();
@@ -310,14 +372,33 @@ async function hapusTransaksi(id) {
   muatTransaksi();
 }
 
-// Event Search & Filter
-searchInput.addEventListener('input', renderTabelTransaksi);
-filterKategori.addEventListener('change', renderTabelTransaksi);
-filterTanggal.addEventListener('change', renderTabelTransaksi);
+// Event Search, Filter, & View Limit
+searchInput.addEventListener('input', () => {
+  halamanSekarang = 1;
+  renderTabelTransaksi();
+});
+
+filterKategori.addEventListener('change', () => {
+  halamanSekarang = 1;
+  renderTabelTransaksi();
+});
+
+filterTanggal.addEventListener('change', () => {
+  halamanSekarang = 1;
+  renderTabelTransaksi();
+});
+
+rowsPerPageSelect.addEventListener('change', () => {
+  halamanSekarang = 1;
+  renderTabelTransaksi();
+});
+
 btnResetFilter.addEventListener('click', () => {
   searchInput.value = '';
   filterKategori.value = 'ALL';
   filterTanggal.value = '';
+  rowsPerPageSelect.value = '5';
+  halamanSekarang = 1;
   renderTabelTransaksi();
 });
 
