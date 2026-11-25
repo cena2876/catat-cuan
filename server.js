@@ -214,9 +214,7 @@ Pertanyaan user: "${pertanyaan}"
 
 Berikan jawaban yang praktis, santai tapi cerdas, langsung memakai angka nyata berdasarkan saldo di atas, dalam bahasa Indonesia yang ringkas (maksimal 2-3 paragraf atau poin singkat).`;
 
-    let response; for (const m of ["gemini-3.8-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash"]) { try { response = await ai.models.generateContent({ model: m, contents: prompt }); break; } catch (e) { if (!String(e.message).includes("503") && !String(e.message).includes("404")) throw e; } }
-
-    res.json({ jawaban: response.text });
+    let response, lastErr; for (const m of ["gemini-2.5-flash", "gemini-2.5-flash-lite"]) { try { response = await ai.models.generateContent({ model: m, contents: prompt }); if (response && response.text) break; } catch (e) { lastErr = e; } } if (!response || !response.text) throw lastErr || new Error("Semua model AI sedang sibuk"); res.json({ jawaban: response.text });
   } catch (error) {
     console.error('ERROR AI:', error);
     res.status(500).json({ pesan: 'Error AI: ' + (error.message || JSON.stringify(error)) });
