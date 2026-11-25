@@ -222,7 +222,7 @@ Berikan jawaban yang praktis, santai tapi cerdas, langsung memakai angka nyata b
     res.json({ jawaban: response.text });
   } catch (error) {
     console.error('ERROR AI:', error);
-    res.status(500).json({ pesan: 'AI gagal merespons! Pastikan GEMINI_API_KEY sudah dipasang di Vercel.' });
+    res.status(500).json({ pesan: 'Error AI: ' + (error.message || JSON.stringify(error)) });
   }
 });
 
