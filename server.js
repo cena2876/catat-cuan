@@ -215,7 +215,7 @@ Pertanyaan user: "${pertanyaan}"
 Berikan jawaban yang praktis, santai tapi cerdas, langsung memakai angka nyata berdasarkan saldo di atas, dalam bahasa Indonesia yang ringkas (maksimal 2-3 paragraf atau poin singkat).`;
 
     const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       contents: prompt,
     });
 
