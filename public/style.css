@@ -5,19 +5,18 @@
 }
 
 body {
-  background-color: #0f172a;
+  background-color: #0b1120;
   color: #f8fafc;
   font-family: system-ui, -apple-system, sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
   min-height: 100vh;
-  padding: 40px 16px;
+  padding: 24px 16px;
 }
 
-.container {
+/* Auth Box (Tetap Rapi di Tengah) */
+.auth-container {
   width: 100%;
-  max-width: 440px;
+  max-width: 420px;
+  margin: 40px auto;
   background-color: #1e293b;
   padding: 28px;
   border-radius: 16px;
@@ -25,7 +24,6 @@ body {
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
 }
 
-/* Auth Section */
 .auth-header {
   text-align: center;
   margin-bottom: 24px;
@@ -61,21 +59,32 @@ body {
   margin-left: 4px;
 }
 
-/* Top Bar */
-.top-bar {
+/* Dashboard Wrapper */
+.dashboard-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Top Navbar */
+.top-navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  background-color: #1e293b;
+  padding: 16px 24px;
+  border-radius: 14px;
+  border: 1px solid #334155;
   margin-bottom: 20px;
 }
 
-.title-row {
+.brand-area {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
-.top-bar h1 {
+.brand-area h1 {
   font-size: 22px;
   color: #38bdf8;
 }
@@ -85,14 +94,19 @@ body {
   color: #0f172a;
   font-size: 10px;
   font-weight: 800;
-  padding: 2px 7px;
+  padding: 3px 8px;
   border-radius: 6px;
 }
 
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
 .user-greeting {
-  font-size: 13px;
-  color: #94a3b8;
-  margin-top: 2px;
+  font-size: 14px;
+  color: #cbd5e1;
 }
 
 .btn-logout {
@@ -103,65 +117,62 @@ body {
   flex: none;
 }
 
-/* Admin Panel */
-.admin-panel {
-  background-color: #0f172a;
-  border: 1px dashed #38bdf8;
-  border-radius: 10px;
-  padding: 12px 14px;
-  margin-bottom: 20px;
+/* ==========================================
+   TATA LETAK RESPONSIF (MOBILE FIRST -> DESKTOP)
+   ========================================== */
+.dashboard-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-.admin-header {
+/* Urutan di HP (Dari Atas ke Bawah): Input -> AI -> Saldo -> Database -> Admin */
+.card-input    { order: 1; }
+.card-ai       { order: 2; }
+.card-saldo    { order: 3; }
+.card-database { order: 4; }
+.card-admin    { order: 5; }
+
+/* Tata Letak Desktop (2 Kolom Terpisah) */
+@media (min-width: 900px) {
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: 380px 1fr;
+    grid-template-areas:
+      "input saldo"
+      "input database"
+      "ai database"
+      "ai admin";
+    align-items: start;
+    gap: 20px;
+  }
+
+  .card-input    { grid-area: input; order: unset; }
+  .card-ai       { grid-area: ai; order: unset; }
+  .card-saldo    { grid-area: saldo; order: unset; }
+  .card-database { grid-area: database; order: unset; }
+  .card-admin    { grid-area: admin; order: unset; }
+}
+
+/* Kartu Umum */
+.card {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+.card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 8px;
-  color: #38bdf8;
-  font-size: 13px;
-  font-weight: bold;
+  margin-bottom: 14px;
 }
 
-.admin-header small {
-  color: #94a3b8;
-  font-weight: normal;
-}
-
-.admin-user-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  font-size: 12px;
-  color: #cbd5e1;
-}
-
-.admin-user-list li {
-  background: transparent;
-  border: none;
-  padding: 2px 0;
-}
-
-/* Kartu Saldo */
-.saldo-card {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  border: 1px solid #334155;
-  padding: 20px;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.saldo-card span {
-  font-size: 12px;
-  color: #94a3b8;
-  letter-spacing: 0.5px;
-}
-
-.saldo-card h2 {
-  font-size: 32px;
-  margin-top: 6px;
-  color: #10b981;
+.card-header h3 {
+  font-size: 16px;
+  color: #f8fafc;
 }
 
 /* Form Input */
@@ -169,35 +180,58 @@ body {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-bottom: 24px;
 }
 
-input {
+.input-split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.input-datetime-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.input-datetime-wrap label {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+input, select {
   width: 100%;
-  padding: 12px 14px;
+  padding: 11px 12px;
   border-radius: 8px;
   border: 1px solid #334155;
   background-color: #0f172a;
   color: #f8fafc;
-  font-size: 14px;
+  font-size: 13px;
   outline: none;
 }
 
-input:focus {
+input:focus, select:focus {
   border-color: #38bdf8;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
 }
 
 .btn-row {
   display: flex;
   gap: 10px;
+  margin-top: 4px;
 }
 
 button {
   flex: 1;
-  padding: 12px;
+  padding: 11px;
   border-radius: 8px;
   border: none;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: bold;
   cursor: pointer;
   transition: opacity 0.2s;
@@ -222,60 +256,164 @@ button:disabled {
   color: #ffffff;
 }
 
-/* Riwayat Transaksi */
-.riwayat-section h3 {
-  font-size: 15px;
-  color: #cbd5e1;
-  margin-bottom: 12px;
-  border-bottom: 1px solid #334155;
-  padding-bottom: 8px;
-}
-
-ul {
-  list-style: none;
+/* Kartu Indeks Saldo */
+.card-saldo {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-li {
-  background-color: #0f172a;
-  padding: 12px 14px;
-  border-radius: 10px;
-  border: 1px solid #334155;
-  display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
 }
 
-.item-nama {
-  font-size: 14px;
-  font-weight: 500;
+.saldo-main span {
+  font-size: 11px;
+  color: #94a3b8;
+  letter-spacing: 0.6px;
 }
 
-.item-kanan {
+.saldo-main h2 {
+  font-size: 30px;
+  color: #10b981;
+  margin-top: 4px;
+}
+
+.saldo-stats {
   display: flex;
-  align-items: center;
-  gap: 10px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background-color: #0f172a;
+  border: 1px solid #334155;
+  padding: 10px 14px;
+  border-radius: 10px;
+  min-width: 140px;
+}
+
+.stat-box small {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 3px;
+}
+
+.stat-in strong {
+  color: #10b981;
+  font-size: 14px;
+}
+
+.stat-out strong {
+  color: #ef4444;
+  font-size: 14px;
+}
+
+/* Database & Filter Bar */
+.badge-count {
+  background-color: #0f172a;
+  color: #38bdf8;
+  border: 1px solid #334155;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.filter-bar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+@media (min-width: 640px) {
+  .filter-bar {
+    grid-template-columns: 2fr 1.3fr 1.2fr auto;
+  }
+}
+
+.btn-reset-filter {
+  background-color: #334155;
+  color: #f8fafc;
+  padding: 0 14px;
+  flex: none;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  background-color: #0f172a;
+}
+
+.tx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.tx-table th {
+  background-color: #162033;
+  color: #94a3b8;
+  font-weight: 600;
+  text-align: left;
+  padding: 11px 14px;
+  border-bottom: 1px solid #334155;
+  white-space: nowrap;
+}
+
+.tx-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #1e293b;
+  color: #e2e8f0;
+  vertical-align: middle;
+}
+
+.tx-table tbody tr:hover {
+  background-color: #162033;
+}
+
+.tx-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+
+.td-waktu {
+  font-size: 12px;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.badge-kat {
+  display: inline-block;
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  white-space: nowrap;
 }
 
 .nominal-masuk {
   color: #10b981;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .nominal-keluar {
   color: #ef4444;
-  font-weight: bold;
-  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .btn-hapus {
   background: transparent;
   color: #64748b;
-  padding: 2px 6px;
+  padding: 2px 8px;
   font-size: 16px;
   flex: none;
 }
@@ -284,19 +422,19 @@ li {
   color: #ef4444;
 }
 
-/* Kotak AI Financial Planner */
-.ai-card {
-  margin-top: 24px;
-  background-color: #0f172a;
-  border: 1px solid #38bdf8;
-  border-radius: 12px;
-  padding: 16px;
+.empty-row {
+  text-align: center;
+  color: #64748b;
+  padding: 24px !important;
 }
 
-.ai-card h3 {
-  font-size: 15px;
+/* Panel AI */
+.card-ai {
+  border-color: #0284c7;
+}
+
+.card-ai h3 {
   color: #38bdf8;
-  margin-bottom: 4px;
 }
 
 .ai-desc {
@@ -320,7 +458,8 @@ li {
 .hasil-ai {
   margin-top: 12px;
   padding: 12px;
-  background-color: #1e293b;
+  background-color: #0f172a;
+  border: 1px solid #334155;
   border-radius: 8px;
   font-size: 13px;
   line-height: 1.6;
@@ -328,15 +467,51 @@ li {
   white-space: pre-line;
 }
 
-/* Credit Developer */
+/* Panel Admin */
+.card-admin {
+  border: 1px dashed #38bdf8;
+  background-color: #0f172a;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #38bdf8;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+.admin-header small {
+  color: #94a3b8;
+  font-weight: normal;
+}
+
+.admin-user-list {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-user-list li {
+  background-color: #1e293b;
+  border: 1px solid #334155;
+  padding: 5px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  color: #cbd5e1;
+}
+
+/* Footer */
 .dev-credit {
   margin-top: 24px;
   padding-top: 14px;
-  border-top: 1px solid #334155;
+  border-top: 1px solid #1e293b;
   text-align: center;
   font-size: 12px;
   color: #64748b;
-  letter-spacing: 0.3px;
 }
 
 .dev-credit a {
@@ -344,8 +519,3 @@ li {
   text-decoration: none;
   font-weight: 600;
 }
-
-.dev-credit a:hover {
-  text-decoration: underline;
-}
-.admin-user-list li { justify-content: flex-start; gap: 6px; }
